@@ -1,0 +1,10 @@
+package.json
+package-lock.json
+README.md
+CONTRIBUTING.md
+.gitignore
+.forceignore
+.env
+node_modules/
+.git/
+.github/

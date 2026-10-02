@@ -1,0 +1,17 @@
+{
+  "name": "smart-record-cloner",
+  "version": "0.1.0",
+  "description": "Open-source Salesforce utility for 1-click deep cloning of records and child lists.",
+  "scripts": {
+    "lint": "eslint **/*.js",
+    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "test:unit": "sfdx-lwc-jest"
+  },
+  "devDependencies": {
+    "@salesforce/eslint-config-lwc": "^3.6.0",
+    "@salesforce/sfdx-lwc-jest": "^6.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "prettier-plugin-apex": "^2.1.6"
+  }
+}

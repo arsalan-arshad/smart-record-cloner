@@ -1,0 +1,18 @@
+# Salesforce DX
+.sf/
+.sfdx/
+.localdevserver/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment
+.env
+.env.*
