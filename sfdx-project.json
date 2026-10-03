@@ -1,15 +1,20 @@
 {
   "packageDirectories": [
     {
+      "versionName": "ver 0.1",
+      "versionNumber": "0.1.0.NEXT",
       "path": "force-app",
       "default": true,
       "package": "SmartRecordCloner",
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT"
+      "versionDescription": ""
     }
   ],
   "name": "smart-record-cloner",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "61.0"
+  "sourceApiVersion": "61.0",
+  "packageAliases": {
+    "SmartRecordCloner": "0Hog70000003dw5CAA",
+    "SmartRecordCloner@0.1.0-1": "04tg7000000V2ITAA0"
+  }
 }
