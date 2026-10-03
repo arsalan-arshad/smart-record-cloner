@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "description": "Open-source Salesforce utility for 1-click deep cloning of records and child lists.",
   "scripts": {
-    "lint": "eslint **/*.js",
-    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-    "test:unit": "sfdx-lwc-jest"
+    "lint": "eslint force-app/main/default/lwc/**/*.js",
+    "prettier": "prettier --write \"force-app/**/*.{cls,js,html,css,json,md}\"",
+    "prettier:check": "prettier --check \"force-app/**/*.{cls,js,html,css,json,md}\"",
+    "test:unit": "sfdx-lwc-jest -- --no-watchman"
   },
   "devDependencies": {
     "@salesforce/eslint-config-lwc": "^3.6.0",

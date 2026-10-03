@@ -1,0 +1,155 @@
+.cloner-container {
+    min-height: 380px;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.loading-box {
+    min-height: 250px;
+}
+
+.loading-text {
+    color: #0176d3;
+    font-weight: 500;
+}
+
+.header-banner {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.font-mono {
+    font-family: monospace;
+    font-size: 0.75rem;
+}
+
+.section-header {
+    background: #f8f9fa;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #eef0f2;
+}
+
+.relationships-container {
+    max-height: 240px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.col-checkbox {
+    width: 60px;
+}
+
+.col-count {
+    width: 80px;
+    text-align: center;
+}
+
+.count-badge {
+    min-width: 32px;
+    font-weight: 600;
+}
+
+.master-badge {
+    background-color: #0176d3;
+    color: white;
+    font-size: 0.65rem;
+}
+
+.row-has-records {
+    background-color: #fafffb;
+}
+
+.advanced-box {
+    background: #fbfbfc;
+    border: 1px solid #eef0f2;
+    border-radius: 6px;
+}
+
+/* Success & Celebration */
+.success-screen {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.success-icon-wrapper {
+    display: inline-block;
+}
+
+.metrics-container .metric-card {
+    min-width: 140px;
+    background: #f3f9f4;
+    border-color: #c7eed2;
+    text-align: center;
+}
+
+.metric-number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #2e844b;
+    line-height: 1.2;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #555555;
+    letter-spacing: 0.5px;
+}
+
+.breakdown-card {
+    background: #fdfdfd;
+    border: 1px solid #ebebeb;
+    border-radius: 6px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.review-hook-card {
+    border-left: 4px solid #ffb75d;
+    border-radius: 6px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fffdf8;
+}
+
+.star-icon {
+    font-size: 1.5rem;
+}
+
+.review-title {
+    color: #8c5b00;
+    font-size: 0.95rem;
+}
+
+.review-link {
+    color: #0176d3;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.review-link:hover {
+    color: #014486;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

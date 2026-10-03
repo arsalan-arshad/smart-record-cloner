@@ -1,0 +1,6 @@
+node_modules/
+.sf/
+.sfdx/
+.localdevserver/
+coverage/
+**/*.html
