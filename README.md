@@ -20,7 +20,23 @@ Standard Salesforce has a basic "Clone" button, but it only clones the parent re
 
 ---
 
-## 2. Implemented Features
+## 2. 🚀 1-Click Installation
+
+Install the latest official 2GP released package (`v0.2.0`) directly into your Salesforce environment:
+
+| Target Org Environment | 1-Click Direct Install Link |
+| :--- | :--- |
+| **Production / Developer Edition** | [👉 **Install in Production / Dev Org (04tg7000000V6E1AAK)**](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V6E1AAK) |
+| **Sandbox Environment** | [👉 **Install in Sandbox (04tg7000000V6E1AAK)**](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V6E1AAK) |
+
+### Install via Salesforce CLI (`sf`):
+```bash
+sf package install --package 04tg7000000V6E1AAK --wait 20 --target-org <YOUR_ORG_ALIAS>
+```
+
+---
+
+## 3. Implemented Features
 
 - **Dynamic Deep Clone Engine (Apex):**
   - **Dynamic Schema Discovery:** Analyzes parent and child relationships automatically via `Schema.DescribeSObjectResult` without hardcoded object logic.
@@ -53,7 +69,7 @@ Standard Salesforce has a basic "Clone" button, but it only clones the parent re
 
 ---
 
-## 3. Architecture & Tech Stack
+## 4. Architecture & Tech Stack
 
 ```
 force-app/main/default/
@@ -77,7 +93,7 @@ force-app/main/default/
 
 ---
 
-## 4. Admin Setup & Usage Guide
+## 5. Admin Setup & Usage Guide
 
 ### 1. Assign Permission Set
 Assign `Smart_Record_Cloner_User` to any user or profile needing deep cloning capabilities:
@@ -93,7 +109,7 @@ sf org assign permset -n Smart_Record_Cloner_User
 5. Enter **Label** = `Clone with Related` and **Name** = `Clone_with_Related`.
 6. Add the action to your **Lightning Record Page** or **Page Layout**.
 
-### 3. Use in Headless Flow Builder
+### 3. Use in Headless Flow Builder & Agentforce
 1. In Flow Builder, add an **Action** element.
 2. Search for `Smart Deep Clone Record`.
 3. Provide:
@@ -101,11 +117,14 @@ sf org assign permset -n Smart_Record_Cloner_User
    - `New Record Name` (Optional)
    - `Child Relationships CSV` (e.g. `Contacts,Opportunities` or `ALL`)
    - `Reset Status` (Boolean)
+   - `Date Shift Days` (Integer, e.g. `30`)
+   - `Child Name Suffix` (String, e.g. `[Clone]`)
+   - `Only Active Children` (Boolean, e.g. `true`)
 4. Store the resulting `New Cloned Record ID`.
 
 ---
 
-## 5. Verification & Test Suite
+## 6. Verification & Test Suite
 
 ### Apex Unit Tests
 ```bash
@@ -115,7 +134,7 @@ sf apex run test --class-names DeepCloneServiceTest --class-names DeepCloneContr
 - `DeepCloneInvocable`: **100%** code coverage
 - `DeepCloneController`: **96%** code coverage
 - `DeepCloneService`: **87%** code coverage
-- Test Pass Rate: **100%** (20 of 20 tests pass)
+- Test Pass Rate: **100%** (22 of 22 tests pass)
 
 ### LWC Jest Unit Tests
 ```bash
@@ -131,7 +150,7 @@ npm run prettier:check
 
 ---
 
-## 6. Automated CI/CD Pipelines
+## 7. Automated CI/CD Pipelines
 
 This repository includes enterprise-grade GitHub Actions workflows for continuous integration and automated deployment:
 
@@ -149,7 +168,7 @@ This repository includes enterprise-grade GitHub Actions workflows for continuou
 
 ---
 
-## 7. Open-Source Roadmap
+## 8. Open-Source Roadmap
 - [x] Dynamic schema describe engine supporting any standard or custom object.
 - [x] LWC Modal with child list selector and record counts.
 - [x] Flow Invocable Action variant for headless flows.
