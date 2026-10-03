@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Grants access to Smart Record Cloner Apex classes and utilities.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Smart Record Cloner User</label>
+    <classAccesses>
+        <apexClass>DeepCloneController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DeepCloneService</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DeepCloneInvocable</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+</PermissionSet>
