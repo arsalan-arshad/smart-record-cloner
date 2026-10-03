@@ -53,11 +53,20 @@ public with sharing class DeepCloneService {
         public Boolean resetStatus;
         @AuraEnabled
         public Map<String, Object> fieldOverrides;
+        @AuraEnabled
+        public Integer dateShiftDays;
+        @AuraEnabled
+        public String childNameSuffix;
+        @AuraEnabled
+        public Boolean onlyActiveChildren;
 
         public CloneRequest() {
             this.childRelationshipNames = new List<String>();
             this.resetStatus = false;
             this.fieldOverrides = new Map<String, Object>();
+            this.dateShiftDays = 0;
+            this.childNameSuffix = '';
+            this.onlyActiveChildren = false;
         }
     }
 
@@ -425,6 +434,11 @@ public with sharing class DeepCloneService {
             }
         }
 
+        // Apply date shift on parent
+        if (request.dateShiftDays != null && request.dateShiftDays != 0) {
+            applyDateShift(clonedParent, fieldMap, request.dateShiftDays);
+        }
+
         // Sanitize State/Country picklists on parent
         sanitizeAddressPicklists(clonedParent, fieldMap);
 
@@ -502,8 +516,20 @@ public with sharing class DeepCloneService {
 
                     List<SObject> clonedChildren = new List<SObject>();
                     for (SObject childRec : originalChildren) {
+                        if (request.onlyActiveChildren == true && isRecordClosedOrInactive(childRec, childFieldMap)) {
+                            continue;
+                        }
+
                         SObject clonedChild = childRec.clone(false, true, false, false);
                         clonedChild.put(fkField, clonedParent.Id);
+
+                        if (String.isNotBlank(request.childNameSuffix)) {
+                            applyChildNameSuffix(clonedChild, childFieldMap, request.childNameSuffix);
+                        }
+
+                        if (request.dateShiftDays != null && request.dateShiftDays != 0) {
+                            applyDateShift(clonedChild, childFieldMap, request.dateShiftDays);
+                        }
 
                         if (childDescribe.getName().equalsIgnoreCase('OpportunityLineItem')) {
                             sanitizeOpportunityLineItem(clonedChild, childFieldMap);
@@ -626,5 +652,91 @@ public with sharing class DeepCloneService {
         } else if (fieldMap.containsKey('status__c')) {
             rec.put('Status__c', 'Draft');
         }
+    }
+
+    /**
+     * @description Shifts all creatable Date and Datetime fields by specified days.
+     */
+    private static void applyDateShift(SObject rec, Map<String, SObjectField> fieldMap, Integer shiftDays) {
+        if (shiftDays == null || shiftDays == 0 || rec == null) {
+            return;
+        }
+        for (String fName : fieldMap.keySet()) {
+            DescribeFieldResult fd = fieldMap.get(fName).getDescribe();
+            if (!fd.isCreateable()) {
+                continue;
+            }
+            Object val = rec.get(fd.getName());
+            if (val == null) {
+                continue;
+            }
+            if (fd.getType() == DisplayType.DATE) {
+                Date d = (Date) val;
+                rec.put(fd.getName(), d.addDays(shiftDays));
+            } else if (fd.getType() == DisplayType.DATETIME) {
+                Datetime dt = (Datetime) val;
+                rec.put(fd.getName(), dt.addDays(shiftDays));
+            }
+        }
+    }
+
+    /**
+     * @description Appends a suffix tag to child record names or subjects to distinguish them.
+     */
+    private static void applyChildNameSuffix(SObject childRec, Map<String, SObjectField> fieldMap, String suffix) {
+        if (String.isBlank(suffix) || childRec == null) {
+            return;
+        }
+        String targetField = null;
+        if (fieldMap.containsKey('name')) {
+            DescribeFieldResult fd = fieldMap.get('name').getDescribe();
+            if (fd.isCreateable() && !fd.isAutoNumber()) {
+                targetField = 'Name';
+            }
+        } else if (fieldMap.containsKey('subject')) {
+            DescribeFieldResult fd = fieldMap.get('subject').getDescribe();
+            if (fd.isCreateable()) {
+                targetField = 'Subject';
+            }
+        }
+        if (targetField != null) {
+            String currentVal = (String) childRec.get(targetField);
+            if (String.isNotBlank(currentVal)) {
+                Integer maxLen = fieldMap.get(targetField.toLowerCase()).getDescribe().getLength();
+                String combined = currentVal + ' ' + suffix.trim();
+                if (maxLen > 0 && combined.length() > maxLen) {
+                    combined = combined.substring(0, maxLen);
+                }
+                childRec.put(targetField, combined);
+            }
+        }
+    }
+
+    /**
+     * @description Returns true if child record is closed or inactive.
+     */
+    private static Boolean isRecordClosedOrInactive(SObject rec, Map<String, SObjectField> fieldMap) {
+        if (fieldMap.containsKey('isclosed')) {
+            Object isClosedVal = rec.get('IsClosed');
+            if (isClosedVal == true) {
+                return true;
+            }
+        }
+        if (fieldMap.containsKey('status')) {
+            Object statusVal = rec.get('Status');
+            if (statusVal != null) {
+                String st = String.valueOf(statusVal).toLowerCase();
+                if (st == 'closed' || st == 'completed' || st == 'cancelled' || st == 'canceled' || st == 'inactive') {
+                    return true;
+                }
+            }
+        }
+        if (fieldMap.containsKey('isactive')) {
+            Object isActiveVal = rec.get('IsActive');
+            if (isActiveVal == false) {
+                return true;
+            }
+        }
+        return false;
     }
 }

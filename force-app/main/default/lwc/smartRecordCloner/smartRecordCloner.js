@@ -28,6 +28,9 @@ export default class SmartRecordCloner extends NavigationMixin(LightningElement)
     @track newRecordName = '';
     @track searchKeyword = '';
     @track resetStatus = false;
+    @track dateShiftDays = 0;
+    @track childNameSuffix = '';
+    @track onlyActiveChildren = false;
     @track errorMessage = '';
     @track cloneResult = null;
 
@@ -140,6 +143,18 @@ export default class SmartRecordCloner extends NavigationMixin(LightningElement)
         this.resetStatus = event.target.checked;
     }
 
+    handleDateShiftChange(event) {
+        this.dateShiftDays = event.target.value ? parseInt(event.target.value, 10) : 0;
+    }
+
+    handleChildNameSuffixChange(event) {
+        this.childNameSuffix = event.target.value;
+    }
+
+    handleOnlyActiveChildrenChange(event) {
+        this.onlyActiveChildren = event.target.checked;
+    }
+
     handleCheckboxChange(event) {
         const relName = event.target.dataset.rel;
         const isChecked = event.target.checked;
@@ -178,7 +193,10 @@ export default class SmartRecordCloner extends NavigationMixin(LightningElement)
                 newRecordName: this.newRecordName,
                 childRelationshipNames: selectedRels,
                 resetStatus: this.resetStatus,
-                fieldOverrides: null
+                fieldOverrides: null,
+                dateShiftDays: this.dateShiftDays,
+                childNameSuffix: this.childNameSuffix,
+                onlyActiveChildren: this.onlyActiveChildren
             });
 
             this.cloneResult = result;
