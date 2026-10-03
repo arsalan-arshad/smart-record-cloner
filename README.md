@@ -6,6 +6,8 @@
 
 > **Open-Source (MIT)** | Built for the Trailblazer & Salesforce Developer Community | Open for PRs & Discussions
 
+[![CI](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/ci.yml/badge.svg)](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/ci.yml)
+[![CD](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/cd.yml/badge.svg)](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/cd.yml)
 [![Install 2GP Package](https://img.shields.io/badge/Salesforce-Install%20Package%20(v0.1.0)-blue.svg?logo=salesforce)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
 [![Sandbox Install](https://img.shields.io/badge/Install-in%20Sandbox-green.svg?logo=salesforce)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -125,7 +127,25 @@ npm run prettier:check
 
 ---
 
-## 6. Open-Source Roadmap
+## 6. Automated CI/CD Pipelines
+
+This repository includes enterprise-grade GitHub Actions workflows for continuous integration and automated deployment:
+
+- **Pull Request Verification (CI - `.github/workflows/ci.yml`):**
+  - Triggers on every PR targeting `main`.
+  - Enforces ESLint standards and Prettier formatting checks.
+  - Runs client-side Jest LWC unit tests.
+  - Headlessly authenticates with Salesforce and executes a dry-run check-only deployment with all Apex tests (`sf project deploy validate --test-level RunLocalTests`).
+  - Guards the `main` branch from broken code or regressions.
+
+- **Automated Deployment on Merge (CD - `.github/workflows/cd.yml`):**
+  - Triggers automatically whenever a PR is merged into `main`.
+  - Deploys source metadata directly into the target Salesforce org (`sf project deploy start --test-level RunLocalTests`).
+  - Publishes a deployment summary and status report directly into the GitHub Actions run summary.
+
+---
+
+## 7. Open-Source Roadmap
 - [x] Dynamic schema describe engine supporting any standard or custom object.
 - [x] LWC Modal with child list selector and record counts.
 - [x] Flow Invocable Action variant for headless flows.
