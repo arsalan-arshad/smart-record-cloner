@@ -20,7 +20,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 22
                   cache: 'npm'
 
             - name: Install NPM Dependencies
@@ -47,10 +47,10 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 22
 
             - name: Install Salesforce CLI
-              run: npm install --global @salesforce/cli
+              run: npm install --global @salesforce/cli@latest
 
             - name: Verify Salesforce CLI Version
               run: sf --version
