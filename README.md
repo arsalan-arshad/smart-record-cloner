@@ -2,6 +2,11 @@
 
 > **Open-Source (MIT)** | Built for the Trailblazer & Salesforce Developer Community | Open for PRs & Discussions
 
+[![Install 2GP Package](https://img.shields.io/badge/Salesforce-Install%20Package%20(v0.1.0)-blue.svg?logo=salesforce)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
+[![Sandbox Install](https://img.shields.io/badge/Install-in%20Sandbox-green.svg?logo=salesforce)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+
 ## 1. Overview & Vision
 A 100% free, zero-friction open-source Salesforce AppExchange utility that solves one of the oldest pain points in Salesforce: **cloning records along with their related child lists (related objects) in a single click**.
 
