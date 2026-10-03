@@ -5,11 +5,17 @@ private class DeepCloneServiceTest {
         Account testAcc = new Account(
             Name = 'Acme Test Corp',
             BillingCity = 'San Francisco',
-            BillingCountryCode = 'US',
-            BillingStateCode = 'CA',
             Phone = '555-1234',
             Website = 'https://acme.test'
         );
+        Map<String, SObjectField> accFields = Schema.SObjectType.Account.fields.getMap();
+        if (accFields.containsKey('BillingCountryCode') && accFields.get('BillingCountryCode').getDescribe().isCreateable()) {
+            testAcc.put('BillingCountryCode', 'US');
+            testAcc.put('BillingStateCode', 'CA');
+        } else if (accFields.containsKey('BillingCountry') && accFields.get('BillingCountry').getDescribe().isCreateable()) {
+            testAcc.put('BillingCountry', 'United States');
+            testAcc.put('BillingState', 'California');
+        }
         insert testAcc;
 
         List<Contact> testContacts = new List<Contact>{

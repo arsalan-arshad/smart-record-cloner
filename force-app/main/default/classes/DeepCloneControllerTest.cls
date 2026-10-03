@@ -4,10 +4,16 @@ private class DeepCloneControllerTest {
     static void setupTestData() {
         Account testAcc = new Account(
             Name = 'Universal Containers',
-            BillingCity = 'New York',
-            BillingCountryCode = 'US',
-            BillingStateCode = 'NY'
+            BillingCity = 'New York'
         );
+        Map<String, SObjectField> accFields = Schema.SObjectType.Account.fields.getMap();
+        if (accFields.containsKey('BillingCountryCode') && accFields.get('BillingCountryCode').getDescribe().isCreateable()) {
+            testAcc.put('BillingCountryCode', 'US');
+            testAcc.put('BillingStateCode', 'NY');
+        } else if (accFields.containsKey('BillingCountry') && accFields.get('BillingCountry').getDescribe().isCreateable()) {
+            testAcc.put('BillingCountry', 'United States');
+            testAcc.put('BillingState', 'New York');
+        }
         insert testAcc;
 
         Contact testContact = new Contact(
