@@ -1,0 +1,72 @@
+name: CD - Auto Deploy on Main Merge
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - 'force-app/**'
+            - 'package.json'
+            - 'package-lock.json'
+            - 'sfdx-project.json'
+            - '.forceignore'
+    workflow_dispatch:
+
+concurrency:
+    group: cd-main
+    cancel-in-progress: false
+
+jobs:
+    deploy-to-salesforce:
+        name: Deploy to Salesforce Org
+        runs-on: ubuntu-latest
+        if: github.repository == 'arsalan-arshad/smart-record-cloner'
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: 'npm'
+
+            - name: Install NPM Dependencies
+              run: npm ci
+
+            - name: Run Jest LWC Unit Tests
+              run: npm run test:unit
+
+            - name: Install Salesforce CLI
+              run: npm install --global @salesforce/cli@latest
+
+            - name: Verify Salesforce CLI Version
+              run: sf --version
+
+            - name: Authenticate Salesforce Org
+              env:
+                  SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+              run: |
+                  if [ -z "$SFDX_AUTH_URL" ]; then
+                    echo "::error::SFDX_AUTH_URL secret is not set!"
+                    exit 1
+                  fi
+                  echo "$SFDX_AUTH_URL" > /tmp/sfdx-url.txt
+                  sf org login sfdx-url --sfdx-url-file /tmp/sfdx-url.txt --alias target-org --set-default
+                  rm -f /tmp/sfdx-url.txt
+
+            - name: Deploy Metadata & Run All Apex Tests
+              run: |
+                  sf project deploy start \
+                    --source-dir force-app \
+                    --test-level RunLocalTests \
+                    --target-org target-org \
+                    --wait 30
+
+            - name: Deployment Summary
+              if: always()
+              run: |
+                  echo "### 🚀 Automated Salesforce Deployment" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Branch:** \`main\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Triggered By:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+                  echo "- **Status:** ${{ job.status == 'success' && '✅ Succeeded' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
