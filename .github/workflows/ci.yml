@@ -1,0 +1,76 @@
+name: CI - Pull Request Verification
+
+on:
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    lint-and-unit-tests:
+        name: Lint & LWC Unit Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'npm'
+
+            - name: Install NPM Dependencies
+              run: npm ci
+
+            - name: Run ESLint
+              run: npm run lint
+
+            - name: Verify Prettier Code Formatting
+              run: npm run prettier:check
+
+            - name: Run Jest LWC Unit Tests
+              run: npm run test:unit
+
+    validate-salesforce:
+        name: Validate Salesforce Deployment & Apex Tests
+        needs: lint-and-unit-tests
+        runs-on: ubuntu-latest
+        if: github.repository == 'arsalan-arshad/smart-record-cloner'
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install Salesforce CLI
+              run: npm install --global @salesforce/cli
+
+            - name: Verify Salesforce CLI Version
+              run: sf --version
+
+            - name: Authenticate Salesforce Org
+              env:
+                  SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+              run: |
+                  if [ -z "$SFDX_AUTH_URL" ]; then
+                    echo "::error::SFDX_AUTH_URL secret is not set!"
+                    exit 1
+                  fi
+                  echo "$SFDX_AUTH_URL" > /tmp/sfdx-url.txt
+                  sf org login sfdx-url --sfdx-url-file /tmp/sfdx-url.txt --alias ci-org --set-default
+                  rm -f /tmp/sfdx-url.txt
+
+            - name: Validate Deployment & Run Apex Tests (Check-Only)
+              run: |
+                  sf project deploy validate \
+                    --source-dir force-app \
+                    --test-level RunLocalTests \
+                    --target-org ci-org \
+                    --wait 30
