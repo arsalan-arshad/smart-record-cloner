@@ -8,8 +8,8 @@
 
 [![CI](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/ci.yml/badge.svg)](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/ci.yml)
 [![CD](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/cd.yml/badge.svg)](https://github.com/arsalan-arshad/smart-record-cloner/actions/workflows/cd.yml)
-[![Install 2GP Package](https://img.shields.io/badge/Salesforce-Install%20Package%20(v0.1.0)-blue.svg?logo=salesforce)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
-[![Sandbox Install](https://img.shields.io/badge/Install-in%20Sandbox-green.svg?logo=salesforce)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
+[![Install 2GP Package](https://img.shields.io/badge/Salesforce-Install%20Package%20(v0.2.0)-blue.svg?logo=salesforce)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V6E1AAK)
+[![Sandbox Install](https://img.shields.io/badge/Install-in%20Sandbox-green.svg?logo=salesforce)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V6E1AAK)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 

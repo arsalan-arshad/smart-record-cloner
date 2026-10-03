@@ -1,12 +1,12 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "ver 0.2",
+      "versionNumber": "0.2.0.NEXT",
       "path": "force-app",
       "default": true,
       "package": "SmartRecordCloner",
-      "versionDescription": ""
+      "versionDescription": "Smart Record Cloner with Smart Date Shifting, Child Tagging, and Active-Only Filters"
     }
   ],
   "name": "smart-record-cloner",
@@ -15,6 +15,7 @@
   "sourceApiVersion": "61.0",
   "packageAliases": {
     "SmartRecordCloner": "0Hog70000003dw5CAA",
-    "SmartRecordCloner@0.1.0-1": "04tg7000000V2ITAA0"
+    "SmartRecordCloner@0.1.0-1": "04tg7000000V2ITAA0",
+    "SmartRecordCloner@0.2.0-1": "04tg7000000V6E1AAK"
   }
 }
