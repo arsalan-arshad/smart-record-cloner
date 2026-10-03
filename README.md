@@ -1,5 +1,9 @@
 # Smart Record Cloner (Deep Clone Utility)
 
+<p align="center">
+  <img src="assets/app_banner.jpg" alt="Smart Record Cloner Banner" width="100%" />
+</p>
+
 > **Open-Source (MIT)** | Built for the Trailblazer & Salesforce Developer Community | Open for PRs & Discussions
 
 [![Install 2GP Package](https://img.shields.io/badge/Salesforce-Install%20Package%20(v0.1.0)-blue.svg?logo=salesforce)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000V2ITAA0)
