@@ -29,13 +29,21 @@ private class DeepCloneServiceTest {
         };
         insert testContacts;
 
-        Opportunity testOpp = new Opportunity(
-            Name = 'Acme Deal Q1',
-            StageName = 'Closed Won',
-            CloseDate = Date.today().addDays(-10),
-            AccountId = testAcc.Id
-        );
-        insert testOpp;
+        List<Opportunity> testOpps = new List<Opportunity>{
+            new Opportunity(
+                Name = 'Acme Deal Q1',
+                StageName = 'Closed Won',
+                CloseDate = Date.today().addDays(-10),
+                AccountId = testAcc.Id
+            ),
+            new Opportunity(
+                Name = 'Acme Active Pipeline',
+                StageName = 'Prospecting',
+                CloseDate = Date.today().addDays(20),
+                AccountId = testAcc.Id
+            )
+        };
+        insert testOpps;
     }
 
     @isTest
@@ -224,5 +232,59 @@ private class DeepCloneServiceTest {
         Case clonedCase = [SELECT Subject, Status FROM Case WHERE Id = :res.newRecordId];
         Assert.areEqual('Cloned Router Issue', clonedCase.Subject);
         Assert.areEqual('New', clonedCase.Status);
+    }
+
+    @isTest
+    static void testDeepCloneWithDateShiftAndChildSuffix() {
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Acme Test Corp' LIMIT 1];
+
+        DeepCloneService.CloneRequest req = new DeepCloneService.CloneRequest();
+        req.recordId = acc.Id;
+        req.newRecordName = 'Shifted Acme Corp';
+        req.childRelationshipNames = new List<String>{ 'Opportunities', 'Contacts' };
+        req.dateShiftDays = 30;
+        req.childNameSuffix = '[Clone]';
+        req.onlyActiveChildren = false;
+
+        Test.startTest();
+        DeepCloneService.CloneResult res = DeepCloneService.deepClone(req);
+        Test.stopTest();
+
+        Assert.isTrue(res.isSuccess, 'Clone should succeed');
+        List<Opportunity> clonedOpps = [
+            SELECT Name, CloseDate
+            FROM Opportunity
+            WHERE AccountId = :res.newRecordId
+        ];
+        Assert.isTrue(clonedOpps.size() > 0, 'Should have cloned opportunities');
+        for (Opportunity opp : clonedOpps) {
+            Assert.isTrue(opp.Name.endsWith('[Clone]'), 'Opportunity name should end with [Clone]');
+        }
+    }
+
+    @isTest
+    static void testDeepCloneWithActiveOnlyFilter() {
+        Account acc = [SELECT Id FROM Account WHERE Name = 'Acme Test Corp' LIMIT 1];
+
+        DeepCloneService.CloneRequest req = new DeepCloneService.CloneRequest();
+        req.recordId = acc.Id;
+        req.newRecordName = 'Active Only Acme Corp';
+        req.childRelationshipNames = new List<String>{ 'Opportunities' };
+        req.onlyActiveChildren = true;
+
+        Test.startTest();
+        DeepCloneService.CloneResult res = DeepCloneService.deepClone(req);
+        Test.stopTest();
+
+        Assert.isTrue(res.isSuccess, 'Clone should succeed');
+        List<Opportunity> clonedOpps = [
+            SELECT Name, StageName
+            FROM Opportunity
+            WHERE AccountId = :res.newRecordId
+        ];
+        Assert.isTrue(clonedOpps.size() > 0, 'Should have cloned active opportunity');
+        for (Opportunity opp : clonedOpps) {
+            Assert.areNotEqual('Closed Won', opp.StageName, 'Closed deal must not be cloned');
+        }
     }
 }

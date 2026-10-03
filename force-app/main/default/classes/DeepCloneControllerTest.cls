@@ -62,7 +62,10 @@ private class DeepCloneControllerTest {
             'Universal Containers (Branch)',
             new List<String>{ 'Contacts' },
             false,
-            null
+            null,
+            0,
+            null,
+            false
         );
         Test.stopTest();
 
@@ -78,7 +81,7 @@ private class DeepCloneControllerTest {
 
         try {
             Test.startTest();
-            DeepCloneController.cloneRecord(acc.Id, 'Fail Test', null, false, null);
+            DeepCloneController.cloneRecord(acc.Id, 'Fail Test', null, false, null, 0, null, false);
             Test.stopTest();
             Assert.fail('Expected AuraHandledException on deleted record');
         } catch (AuraHandledException ahe) {
@@ -157,11 +160,57 @@ private class DeepCloneControllerTest {
     static void testCloneRecordException() {
         try {
             Test.startTest();
-            DeepCloneController.cloneRecord(null, 'Fail', null, false, null);
+            DeepCloneController.cloneRecord(null, 'Fail', null, false, null, 0, null, false);
             Test.stopTest();
             Assert.fail('Expected AuraHandledException on null recordId');
         } catch (AuraHandledException ahe) {
             Assert.isTrue(ahe != null);
         }
+    }
+
+    @isTest
+    static void testCloneRecordWithDifferentiatorParams() {
+        Account acc = [SELECT Id, Name FROM Account WHERE Name = 'Universal Containers' LIMIT 1];
+
+        Test.startTest();
+        DeepCloneService.CloneResult res = DeepCloneController.cloneRecord(
+            acc.Id,
+            'Universal Containers (Advanced)',
+            new List<String>{ 'Contacts' },
+            false,
+            null,
+            30,
+            '(Copy)',
+            true
+        );
+        Test.stopTest();
+
+        Assert.isTrue(res.isSuccess);
+        Assert.areNotEqual(null, res.newRecordId);
+        Assert.areEqual(1, res.totalChildrenCloned);
+    }
+
+    @isTest
+    static void testDeepCloneInvocableWithDifferentiators() {
+        Account acc = [SELECT Id, Name FROM Account WHERE Name = 'Universal Containers' LIMIT 1];
+
+        DeepCloneInvocable.InvocableRequest req = new DeepCloneInvocable.InvocableRequest();
+        req.recordId = acc.Id;
+        req.newRecordName = 'Invocable AI Copy';
+        req.childRelationshipsCsv = 'Contacts';
+        req.resetStatus = false;
+        req.dateShiftDays = 45;
+        req.childNameSuffix = '[AI Clone]';
+        req.onlyActiveChildren = true;
+
+        Test.startTest();
+        List<DeepCloneInvocable.InvocableResult> results = DeepCloneInvocable.execute(
+            new List<DeepCloneInvocable.InvocableRequest>{ req }
+        );
+        Test.stopTest();
+
+        Assert.areEqual(1, results.size());
+        Assert.isTrue(results[0].isSuccess);
+        Assert.areEqual(1, results[0].totalChildrenCloned);
     }
 }

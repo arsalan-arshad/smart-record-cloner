@@ -26,6 +26,27 @@ public with sharing class DeepCloneInvocable {
             required=false
         )
         public Boolean resetStatus;
+
+        @InvocableVariable(
+            label='Date Shift Days'
+            description='Days to shift all Date/Datetime fields forward (e.g. 30)'
+            required=false
+        )
+        public Integer dateShiftDays;
+
+        @InvocableVariable(
+            label='Child Name Suffix'
+            description='Suffix appended to child record Names/Subjects (e.g. "[Clone]")'
+            required=false
+        )
+        public String childNameSuffix;
+
+        @InvocableVariable(
+            label='Only Active Children'
+            description='Set to true to exclude closed or inactive child records'
+            required=false
+        )
+        public Boolean onlyActiveChildren;
     }
 
     public class InvocableResult {
@@ -63,6 +84,9 @@ public with sharing class DeepCloneInvocable {
                 cloneReq.recordId = req.recordId;
                 cloneReq.newRecordName = req.newRecordName;
                 cloneReq.resetStatus = req.resetStatus != null ? req.resetStatus : false;
+                cloneReq.dateShiftDays = req.dateShiftDays != null ? req.dateShiftDays : 0;
+                cloneReq.childNameSuffix = req.childNameSuffix;
+                cloneReq.onlyActiveChildren = (req.onlyActiveChildren == true);
 
                 if (String.isNotBlank(req.childRelationshipsCsv)) {
                     if (req.childRelationshipsCsv.trim().equalsIgnoreCase('ALL')) {

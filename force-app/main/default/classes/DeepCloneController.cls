@@ -20,7 +20,10 @@ public with sharing class DeepCloneController {
         String newRecordName,
         List<String> childRelationshipNames,
         Boolean resetStatus,
-        Map<String, Object> fieldOverrides
+        Map<String, Object> fieldOverrides,
+        Integer dateShiftDays,
+        String childNameSuffix,
+        Boolean onlyActiveChildren
     ) {
         try {
             DeepCloneService.CloneRequest req = new DeepCloneService.CloneRequest();
@@ -29,6 +32,9 @@ public with sharing class DeepCloneController {
             req.childRelationshipNames = childRelationshipNames;
             req.resetStatus = resetStatus != null ? resetStatus : false;
             req.fieldOverrides = fieldOverrides;
+            req.dateShiftDays = dateShiftDays != null ? dateShiftDays : 0;
+            req.childNameSuffix = childNameSuffix;
+            req.onlyActiveChildren = onlyActiveChildren != null ? onlyActiveChildren : false;
 
             DeepCloneService.CloneResult result = DeepCloneService.deepClone(req);
             if (!result.isSuccess) {
